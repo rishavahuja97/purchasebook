@@ -82,9 +82,20 @@ def run_daily_backup():
     except Exception as e:
         log.error(f"Backup failed: {e}")
 
+# ── Keep-alive ping (every 5 days) ───────────────────────────────────────────
+def keep_alive():
+    """Pings Supabase every 5 days so the free tier never goes inactive."""
+    try:
+        db = get_db()
+        db.table('purchases').select('id').limit(1).execute()
+        log.info("Keep-alive ping sent to Supabase ✅")
+    except Exception as e:
+        log.warning(f"Keep-alive ping failed: {e}")
+
 # ── Scheduler (midnight IST = 18:30 UTC) ─────────────────────────────────────
 scheduler = BackgroundScheduler(timezone='UTC')
 scheduler.add_job(run_daily_backup, 'cron', hour=18, minute=30)
+scheduler.add_job(keep_alive, 'interval', days=5)
 scheduler.start()
 
 # ── Routes ────────────────────────────────────────────────────────────────────
