@@ -1,0 +1,6 @@
+flask
+supabase
+gspread
+google-auth
+apscheduler
+gunicorn
