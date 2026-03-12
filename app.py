@@ -103,6 +103,10 @@ scheduler.start()
 def index():
     return render_template('index.html')
 
+@app.route('/ping')
+def ping():
+    return 'ok', 200
+
 @app.route('/api/load')
 def load_all():
     try:
